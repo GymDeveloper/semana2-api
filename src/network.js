@@ -1,12 +1,9 @@
 import { Router } from "express";
+import { index, login } from "./controller.js";
 
 const testRouter = Router();
 
-testRouter.route("/").get((req, res) => {
-  res.json({
-    data: "test sucess",
-  });
-});
-
+testRouter.route("/").get(index);
+testRouter.route("/login").post(login);
 // que variable exportamos aqui?
 export default testRouter;

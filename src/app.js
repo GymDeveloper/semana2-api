@@ -4,5 +4,7 @@ import network from "./network.js";
 
 // por ende por ahora esta archivo solo va a exportar app
 export const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use("/", network);
 // las rutas deberian tener un archivo decidado para ellas
