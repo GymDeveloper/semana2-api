@@ -13,6 +13,13 @@ app.get("/", (req, res) => {
   });
 });
 
+//route get test
+app.get("/test", (req, res) => {
+  res.json({
+    data: "success",
+  });
+});
+
 // como inicio un servidor en express?
 // recuereden que pueden usar cualquier puerto
 // sin embargo los recomendados por la comunidad son 3000 - 6000 - 9000 - 3001
