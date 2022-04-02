@@ -1,11 +1,9 @@
 import { Router } from "express";
+import * as Controller from "./controller";
 
 const storyRouter = Router();
 
-storyRouter.route("/").get((req, res) => {
-  res.json({
-    message: "Hello from story",
-  });
-});
+storyRouter.route("/").get(Controller.list);
+storyRouter.route("/").post(Controller.store);
 
 export default storyRouter;
