@@ -5,6 +5,6 @@ import * as controller from "./controller";
 const testRouter = Router();
 
 testRouter.route("/").get(controller.index);
-testRouter.route("/login").post(controller.login);
+testRouter.route("/store").post(controller.store);
 // que variable exportamos aqui?
 export default testRouter;

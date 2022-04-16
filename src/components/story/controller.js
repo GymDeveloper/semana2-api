@@ -1,7 +1,7 @@
 // Esto va a actuar como si fuera una base de local
 // en verdad es un array de objetos
 
-const stories = [
+let stories = [
   {
     id: 1,
     name: "Harry Potter",
@@ -58,4 +58,12 @@ export const update = (req, res) => {
 // METHOD: DELETE
 export const destroy = (req, res) => {
   // elimina un story
+  // para eliminar un elemento de un array de objetos
+  // podemos usar filter
+  const { id } = req.params;
+  stories = stories.filter((story) => story.id !== id);
+  return res.status(200).json({
+    ok: true,
+    data: stories,
+  });
 };

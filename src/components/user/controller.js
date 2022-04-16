@@ -6,22 +6,33 @@
 // al crear una funcion que export podemos usar esta para
 // importar el otro artchivo
 const data = [];
+
 export const index = (req, res) => {
-  res.json({
-    data: "test success",
+  return res.status(200).json({
+    ok: true,
+    data,
   });
 };
 
-export const login = (req, res) => {
-  const { email, password } = req.body;
+export const store = (req, res) => {
   req.body.id = data.length + 1;
-  data.push(req.body);
+  const user = req.body;
 
-  res.json({
-    data: {
-      type: "login",
-      email,
-      password,
-    },
+  const findUser = data.find(
+    (u) => u.name === user.name || u.email === user.email
+  );
+
+  if (findUser) {
+    return res.status(200).json({
+      ok: false,
+      data: "User already exits",
+    });
+  }
+
+  data.push(user);
+
+  return res.status(201).json({
+    ok: true,
+    data: user,
   });
 };
