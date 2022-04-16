@@ -4,7 +4,7 @@ import { sumar, restar, multiplicar, division } from "../helper/operations";
 test("Suma", () => {
   // vamos a usar la funcion expect llamar al funcion sumar pasarle 2 parametros y
   // y esperar un resultado
-  expect(sumar(1, 3)).toBe(4);
+  expect(sumar(1, 3)).toBe(5);
 });
 
 test("Resta", () => {
