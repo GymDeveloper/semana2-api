@@ -1,35 +1,26 @@
-/**
- * Nuestro archivo que contenga
- * la logica de la app
- */
+import { prisma } from "../../../db";
+import { sign } from "../../auth";
+import { hasPassword } from "../../helper/password";
+import axios from "axios";
 
-// al crear una funcion que export podemos usar esta para
-// importar el otro artchivo
 const data = [];
 
-export const index = (req, res) => {
+export const index = async (req, res) => {
+  const users = await prisma.user.findMany();
+
   return res.status(200).json({
     ok: true,
-    data,
+    users,
   });
 };
 
-export const store = (req, res) => {
-  req.body.id = data.length + 1;
-  const user = req.body;
-
-  const findUser = data.find(
-    (u) => u.name === user.name || u.email === user.email
-  );
-
-  if (findUser) {
-    return res.status(200).json({
-      ok: false,
-      data: "User already exits",
-    });
-  }
-
-  data.push(user);
+export const store = async (req, res) => {
+  const user = await prisma.user.create({
+    data: {
+      ...req.body,
+      password: await hasPassword(req.body.password),
+    },
+  });
 
   return res.status(201).json({
     ok: true,
@@ -79,5 +70,64 @@ export const destroy = (req, res) => {
   return res.status(200).json({
     ok: true,
     data: "User deleted",
+  });
+};
+
+export const login = async (req, res) => {
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        email: req.body.email,
+      },
+    });
+
+    if (!user) {
+      return res.status(500).json({
+        ok: false,
+        data: "User not found",
+      });
+    }
+
+    if ((await hasPassword(req.body.password)) === user.password) {
+      user.token = sign({
+        email: req.body.email,
+        password: req.body.password,
+      });
+
+      return res.status(200).json({
+        ok: true,
+        data: user,
+      });
+    } else {
+      return res.status(500).json({
+        ok: false,
+        data: "No match",
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      data: error.message,
+    });
+  }
+};
+
+export const callback = async (req, res) => {
+  const { code } = req.query;
+
+  const response = await axios.post(
+    "https://github.com/login/oauth/access_token",
+    {
+      client_id: "9fbae9364e97e6c8ac5c",
+      client_secret: "0e739b546036a0879be0d4d071d409070c9b603a",
+      code,
+    }
+  );
+
+  const access_token = response.data.split("=");
+
+  return res.status(200).json({
+    ok: true,
+    data: access_token[1].replace("&scope", ""),
   });
 };
